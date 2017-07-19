@@ -38,18 +38,18 @@ public class DrawView extends View {
     }
 
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        canvas.drawLine(0, 0, 200, 200, myGreenPaintStroke);
-        canvas.drawCircle(100, 300, 40, myRedPaintFill);
-        canvas.drawRect(200,300, 250, 350, myGreenPaintStroke);
-        canvas.drawCircle(300, 300, 250, myBluePaintFill);
-
-        myPath = new Path();
-        myPath.moveTo(400,400);
-        myPath.lineTo(500,600);
-        myPath.lineTo(300,600);
-        canvas.drawPath(myPath, myRedPaintFill);
+//        super.onDraw(canvas);
+//
+//        canvas.drawLine(0, 0, 200, 200, myGreenPaintStroke);
+//        canvas.drawCircle(100, 300, 40, myRedPaintFill);
+//        canvas.drawRect(200,300, 250, 350, myGreenPaintStroke);
+//        canvas.drawCircle(300, 300, 250, myBluePaintFill);
+//
+//        myPath = new Path();
+//        myPath.moveTo(400,400);
+//        myPath.lineTo(500,600);
+//        myPath.lineTo(300,600);
+//        canvas.drawPath(myPath, myRedPaintFill);
 
     }
 
