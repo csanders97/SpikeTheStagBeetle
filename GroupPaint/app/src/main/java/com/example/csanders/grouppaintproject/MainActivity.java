@@ -1,9 +1,12 @@
 package com.example.csanders.grouppaintproject;
 
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,11 +25,24 @@ public class MainActivity extends AppCompatActivity {
         customCanvas = (CanvasView) findViewById(R.id.signature_canvas);
     }
 
+    public void onDrawShape(View view) {
+        eraseCall = 0;
+        String shapeName = getResources().getResourceEntryName(view.getId());
+        CanvasView.nameOfShape = shapeName;
+        CanvasView.makeShapes = true;
+    }
+
     public void clearCanvas(View view) {
+        eraseCall = 0;
         customCanvas.clearCanvas();
     }
 
+    public void saveCanvas (View view) {
+        Toast.makeText(getApplicationContext(), "Work in Progress :)", Toast.LENGTH_LONG).show();
+    }
+
     public void changeBrushSize(View view) {
+        eraseCall = 0;
         brushCount++;
         if (brushCount == 1) {
             brushSize = 10f;
@@ -66,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeStrokeColor(View view) {
+        eraseCall = 0;
         String buttonName = getResources().getResourceEntryName(view.getId());
         System.out.print(buttonName);
         if (buttonName.equals("black")) {

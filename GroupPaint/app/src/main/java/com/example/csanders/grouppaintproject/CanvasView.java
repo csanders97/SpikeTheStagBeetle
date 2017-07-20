@@ -8,8 +8,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by csanders on 7/17/2017.
@@ -18,12 +20,18 @@ import android.view.View;
 public class CanvasView extends View {
 
     private Bitmap mBitmap;
-    private Canvas mCanvas;
+    public Canvas mCanvas;
     private Path mPath;
     Context context;
     public Paint mPaint, dPaint;
     private float mX, mY;
+    public static String nameOfShape;
+    public static boolean makeShapes = false;
     private static final float TOLERANCE = 5;
+    Paint myRedPaintFill;
+    Paint myGreenPaintFill;
+    Paint myBluePaintFill;
+    Paint myPurplePaintFill;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
@@ -36,6 +44,26 @@ public class CanvasView extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeWidth(10f);
         dPaint = new Paint(Paint.DITHER_FLAG);
+        init();
+    }
+
+    private void init(){
+        myRedPaintFill = new Paint();
+        myRedPaintFill.setColor(Color.RED);
+        myRedPaintFill.setStyle(Paint.Style.FILL);
+
+        myGreenPaintFill = new Paint();
+        myGreenPaintFill.setColor(Color.GREEN);
+        myGreenPaintFill.setStyle(Paint.Style.FILL);
+
+        myBluePaintFill = new Paint();
+        myBluePaintFill.setColor(Color.BLUE);
+        myBluePaintFill.setStyle(Paint.Style.FILL);
+
+        myPurplePaintFill = new Paint();
+        myPurplePaintFill.setColor(Color.parseColor("#FF00FF"));
+        myPurplePaintFill.setStyle(Paint.Style.STROKE);
+        myPurplePaintFill.setStrokeWidth(10);
     }
 
     @Override
@@ -52,14 +80,12 @@ public class CanvasView extends View {
         canvas.drawPath(mPath, mPaint);
     }
 
-    // when ACTION_DOWN start touch according to the x,y values
     private void startTouch(float x, float y) {
         mPath.moveTo(x, y);
         mX = x;
         mY = y;
     }
 
-    // when ACTION_MOVE move touch according to the x,y values
     private void moveTouch(float x, float y) {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
@@ -70,33 +96,76 @@ public class CanvasView extends View {
         }
     }
 
+    public void drawTriangle(float x, float y) {
+        int width = 100;
+        int halfWidth = width / 2;
+
+        Path path = new Path();
+        path.moveTo(x, y - halfWidth);
+        path.lineTo(x - halfWidth, y + halfWidth);
+        path.lineTo(x + halfWidth, y + halfWidth);
+        path.lineTo(x, y - halfWidth);
+        path.close();
+
+        mCanvas.drawPath(path, myGreenPaintFill);
+    }
+
     public void clearCanvas() {
         mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
 
-    // when ACTION_UP stop touch
     private void upTouch() {
         mCanvas.drawPath(mPath, mPaint);
         mPath.reset();
     }
 
-    //override the onTouchEvent
+    private void putShapeDown(float x, float y) {
+        mPath.moveTo(x, y);
+        mX = x;
+        mY = y;
+        if (nameOfShape.equals("square")) {
+            mCanvas.drawRect(mX, mY, (mX + 200), (mY + 200), myRedPaintFill);
+        }
+        else if (nameOfShape.equals("circle")) {
+            mCanvas.drawCircle(mX, mY, 50, myBluePaintFill);
+        }
+        else if (nameOfShape.equals("triangle")) {
+            drawTriangle(mX, mY);
+        }
+        else if (nameOfShape.equals("line")) {
+            mCanvas.drawLine(mX, mY, (mX+200), (mY+200), myPurplePaintFill);
+
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startTouch(x, y);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                moveTouch(x, y);
-                break;
-            case MotionEvent.ACTION_UP:
-                upTouch();
-                break;
+        if (makeShapes) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    putShapeDown(x, y);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    upTouch();
+                    makeShapes = false;
+                    break;
+            }
+        }
+        else {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    startTouch(x, y);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    moveTouch(x, y);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    upTouch();
+                    break;
+            }
         }
         invalidate();
         return true;
