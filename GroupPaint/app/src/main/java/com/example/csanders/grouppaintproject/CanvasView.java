@@ -22,7 +22,7 @@ public class CanvasView extends View {
     private Canvas mCanvas;
     private Path mPath;
     Context context;
-    private Paint mPaint;
+    public Paint mPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
@@ -39,7 +39,7 @@ public class CanvasView extends View {
         mPaint.setColor(Color.BLACK);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeWidth(4f);
+        mPaint.setStrokeWidth(10f);
     }
 
     // override onSizeChanged
