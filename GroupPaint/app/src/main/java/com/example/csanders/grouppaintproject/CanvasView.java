@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,47 +17,38 @@ import android.view.View;
 
 public class CanvasView extends View {
 
-    public int width;
-    public int height;
     private Bitmap mBitmap;
     private Canvas mCanvas;
     private Path mPath;
     Context context;
-    public Paint mPaint;
+    public Paint mPaint, dPaint;
     private float mX, mY;
     private static final float TOLERANCE = 5;
 
     public CanvasView(Context c, AttributeSet attrs) {
         super(c, attrs);
         context = c;
-
-        // we set a new Path
-        mPath = new Path();
-
-        // and we set a new Paint with the desired attributes
         mPaint = new Paint();
+        mPath = new Path();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.BLACK);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeWidth(10f);
+        dPaint = new Paint(Paint.DITHER_FLAG);
     }
 
-    // override onSizeChanged
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        // your Canvas will draw onto the defined Bitmap
         mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
     }
 
-    // override onDraw
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        // draw the mPath with the mPaint on the canvas when onDraw
+        canvas.drawBitmap(mBitmap, 0, 0, dPaint);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -79,13 +71,14 @@ public class CanvasView extends View {
     }
 
     public void clearCanvas() {
-        mPath.reset();
+        mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
 
     // when ACTION_UP stop touch
     private void upTouch() {
-        mPath.lineTo(mX, mY);
+        mCanvas.drawPath(mPath, mPaint);
+        mPath.reset();
     }
 
     //override the onTouchEvent
@@ -97,17 +90,15 @@ public class CanvasView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startTouch(x, y);
-                invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveTouch(x, y);
-                invalidate();
                 break;
             case MotionEvent.ACTION_UP:
                 upTouch();
-                invalidate();
                 break;
         }
+        invalidate();
         return true;
     }
 }
