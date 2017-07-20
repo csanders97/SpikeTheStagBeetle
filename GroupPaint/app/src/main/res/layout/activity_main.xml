@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.csanders.grouppaintproject.MainActivity"
     android:background="#FFFFFF"
-    android:orientation="vertical" >
+    android:orientation="portrait" >
 
     <com.example.csanders.grouppaintproject.CanvasView
         android:id="@+id/signature_canvas"
