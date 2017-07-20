@@ -36,8 +36,16 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "You are now using the medium brush", Toast.LENGTH_LONG).show();
         } else if (brushCount == 3) {
             brushSize = 30f;
-            brushCount = 0;
             Toast.makeText(getApplicationContext(), "You are now using the large brush", Toast.LENGTH_LONG).show();
+        }
+        else if (brushCount == 4) {
+            brushSize = 40f;
+            Toast.makeText(getApplicationContext(), "You are now using the extra large brush", Toast.LENGTH_LONG).show();
+        }
+        else if (brushCount == 5) {
+            brushSize = 50f;
+            brushCount = 0;
+            Toast.makeText(getApplicationContext(), "You are now using the jumbo brush", Toast.LENGTH_LONG).show();
         }
         customCanvas.mPaint.setStrokeWidth(brushSize);
     }
